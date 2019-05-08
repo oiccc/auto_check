@@ -53,7 +53,10 @@ def check_status(cookies_set,log_file_path,case_content,time_warning_limit,login
 						url = json.loads(i['message'])['message']['params']['response']['url']
 						otherStyleTime = time.strftime(("%Y-%m-%d %H:%M:%S"), time.localtime(i['timestamp']/1000))
 						datasize = str(float(json.loads(i['message'])['message']['params']['response']['encodedDataLength'])/1024)[:4]
-						timetime = str(float(json.loads(i['message'])['message']['params']['response']['timing']['sendEnd'])-float(json.loads(i['message'])['message']['params']['response']['timing']['sendStart']))[:4]
+						try:
+							timetime = str(float(json.loads(i['message'])['message']['params']['response']['timing']['sendEnd'])-float(json.loads(i['message'])['message']['params']['response']['timing']['sendStart']))[:4]
+						except Exception as e:
+							timetime = 0
 						status = json.loads(i['message'])['message']['params']['response']['status']
 						statusText = json.loads(i['message'])['message']['params']['response']['statusText']
 						r_type = json.loads(i['message'])['message']['params']['type']
