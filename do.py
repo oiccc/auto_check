@@ -48,11 +48,12 @@ def check_status(cookies_set,log_file_path,case_content,time_warning_limit,login
 		http_status_200_count = 0
 		http_status_500_count = 0
 		http_status_000_count = 0
+		result_000_string =''
 		with open(log_file_path,'a') as f:
 			for i in xxx:
 				try:
 					if json.loads(i['message'])['message']['method'] == 'Network.responseReceived':
-						url = json.loads(i['message'])['message']['params']['response']['url']
+						url = json.loads(i['message'])['message']['params']['response']['url'][:100]
 						otherStyleTime = time.strftime(("%Y-%m-%d %H:%M:%S"), time.localtime(i['timestamp']/1000))
 						datasize = str(float(json.loads(i['message'])['message']['params']['response']['encodedDataLength'])/1024)[:4]
 						try:
@@ -71,12 +72,14 @@ def check_status(cookies_set,log_file_path,case_content,time_warning_limit,login
 							else:
 								print (str(otherStyleTime)+'|'+url+'|\033[1;32m'+str(status)+'\033[0m|'+str(r_type)+'|'+str(datasize)+'kb|\033[1;32m'+str(timetime)+'\033[0mms')
 						elif status == 500:
+							result_000_string = result_000_string +log_string
 							http_status_500_count += 1
 							if float(timetime) >time_warning_limit:
 								print (str(otherStyleTime)+'|'+url+'|\033[1;31m'+str(status)+'\033[0m|'+str(r_type)+'|'+str(datasize)+'kb|\033[1;33m'+str(timetime)+'\033[0mms')
 							else:
 								print (str(otherStyleTime)+'|'+url+'|\033[1;31m'+str(status)+'\033[0m|'+str(r_type)+'|'+str(datasize)+'kb|\033[1;32m'+str(timetime)+'\033[0mms')
 						else:
+							result_000_string = result_000_string +log_string
 							http_status_000_count += 1
 							if float(timetime) >time_warning_limit:
 								print (str(otherStyleTime)+'|'+url+'|\033[1;31m'+str(status)+'\033[0m|'+str(r_type)+'|'+str(datasize)+'kb|\033[1;33m'+str(timetime)+'\033[0mms')
@@ -84,7 +87,9 @@ def check_status(cookies_set,log_file_path,case_content,time_warning_limit,login
 								print (str(otherStyleTime)+'|'+url+'|\033[1;31m'+str(status)+'\033[0m|'+str(r_type)+'|'+str(datasize)+'kb|\033[1;32m'+str(timetime)+'\033[0mms')
 				except Exception as e:
 					print (e)
-		print (str(http_status_200_count)+'|'+str(http_status_500_count)+'|'+str(http_status_000_count))		
+		with open(result_file_path,'a') as dd:
+			result_string = (str(otherStyleTime)+"|OK:"+str(http_status_200_count)+'|500:'+str(http_status_500_count)+'|000:'+str(http_status_000_count)+'\n\r'+result_000_string)		
+			dd.write(result_string)
 
 	except Exception as e:
 		print (e)
