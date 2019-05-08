@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# coding:utf-8
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 import json
