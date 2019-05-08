@@ -48,34 +48,37 @@ def check_status(cookies_set,log_file_path,case_content,time_warning_limit,login
 		http_status_000_count = 0
 		with open(log_file_path,'a') as f:
 			for i in xxx:
-				if json.loads(i['message'])['message']['method'] == 'Network.responseReceived':
-					url = json.loads(i['message'])['message']['params']['response']['url']
-					otherStyleTime = time.strftime(("%Y-%m-%d %H:%M:%S"), time.localtime(i['timestamp']/1000))
-					datasize = str(float(json.loads(i['message'])['message']['params']['response']['encodedDataLength'])/1024)[:4]
-					timetime = str(float(json.loads(i['message'])['message']['params']['response']['timing']['sendEnd'])-float(json.loads(i['message'])['message']['params']['response']['timing']['sendStart']))[:4]
-					status = json.loads(i['message'])['message']['params']['response']['status']
-					statusText = json.loads(i['message'])['message']['params']['response']['statusText']
-					r_type = json.loads(i['message'])['message']['params']['type']
-					log_string = str(otherStyleTime)+'|'+url+'|'+str(status)+'|'+str(r_type)+'|'+str(datasize)+'kb|'+str(timetime)+'\n\r'
-					f.write(log_string)
-					if status == 200:
-						http_status_200_count += 1
-						if float(timetime) >time_warning_limit:
-							print (str(otherStyleTime)+'|'+url+'|\033[1;32m'+str(status)+'\033[0m|'+str(r_type)+'|'+str(datasize)+'kb|\033[1;33m'+str(timetime)+'\033[0mms')
+				try:
+					if json.loads(i['message'])['message']['method'] == 'Network.responseReceived':
+						url = json.loads(i['message'])['message']['params']['response']['url']
+						otherStyleTime = time.strftime(("%Y-%m-%d %H:%M:%S"), time.localtime(i['timestamp']/1000))
+						datasize = str(float(json.loads(i['message'])['message']['params']['response']['encodedDataLength'])/1024)[:4]
+						timetime = str(float(json.loads(i['message'])['message']['params']['response']['timing']['sendEnd'])-float(json.loads(i['message'])['message']['params']['response']['timing']['sendStart']))[:4]
+						status = json.loads(i['message'])['message']['params']['response']['status']
+						statusText = json.loads(i['message'])['message']['params']['response']['statusText']
+						r_type = json.loads(i['message'])['message']['params']['type']
+						log_string = str(otherStyleTime)+'|'+url+'|'+str(status)+'|'+str(r_type)+'|'+str(datasize)+'kb|'+str(timetime)+'\n\r'
+						f.write(log_string)
+						if status == 200:
+							http_status_200_count += 1
+							if float(timetime) >time_warning_limit:
+								print (str(otherStyleTime)+'|'+url+'|\033[1;32m'+str(status)+'\033[0m|'+str(r_type)+'|'+str(datasize)+'kb|\033[1;33m'+str(timetime)+'\033[0mms')
+							else:
+								print (str(otherStyleTime)+'|'+url+'|\033[1;32m'+str(status)+'\033[0m|'+str(r_type)+'|'+str(datasize)+'kb|\033[1;32m'+str(timetime)+'\033[0mms')
+						elif status == 500:
+							http_status_500_count += 1
+							if float(timetime) >time_warning_limit:
+								print (str(otherStyleTime)+'|'+url+'|\033[1;31m'+str(status)+'\033[0m|'+str(r_type)+'|'+str(datasize)+'kb|\033[1;33m'+str(timetime)+'\033[0mms')
+							else:
+								print (str(otherStyleTime)+'|'+url+'|\033[1;31m'+str(status)+'\033[0m|'+str(r_type)+'|'+str(datasize)+'kb|\033[1;32m'+str(timetime)+'\033[0mms')
 						else:
-							print (str(otherStyleTime)+'|'+url+'|\033[1;32m'+str(status)+'\033[0m|'+str(r_type)+'|'+str(datasize)+'kb|\033[1;32m'+str(timetime)+'\033[0mms')
-					elif status == 500:
-						http_status_500_count += 1
-						if float(timetime) >time_warning_limit:
-							print (str(otherStyleTime)+'|'+url+'|\033[1;31m'+str(status)+'\033[0m|'+str(r_type)+'|'+str(datasize)+'kb|\033[1;33m'+str(timetime)+'\033[0mms')
-						else:
-							print (str(otherStyleTime)+'|'+url+'|\033[1;31m'+str(status)+'\033[0m|'+str(r_type)+'|'+str(datasize)+'kb|\033[1;32m'+str(timetime)+'\033[0mms')
-					else:
-						http_status_000_count += 1
-						if float(timetime) >time_warning_limit:
-							print (str(otherStyleTime)+'|'+url+'|\033[1;31m'+str(status)+'\033[0m|'+str(r_type)+'|'+str(datasize)+'kb|\033[1;33m'+str(timetime)+'\033[0mms')
-						else:
-							print (str(otherStyleTime)+'|'+url+'|\033[1;31m'+str(status)+'\033[0m|'+str(r_type)+'|'+str(datasize)+'kb|\033[1;32m'+str(timetime)+'\033[0mms')
+							http_status_000_count += 1
+							if float(timetime) >time_warning_limit:
+								print (str(otherStyleTime)+'|'+url+'|\033[1;31m'+str(status)+'\033[0m|'+str(r_type)+'|'+str(datasize)+'kb|\033[1;33m'+str(timetime)+'\033[0mms')
+							else:
+								print (str(otherStyleTime)+'|'+url+'|\033[1;31m'+str(status)+'\033[0m|'+str(r_type)+'|'+str(datasize)+'kb|\033[1;32m'+str(timetime)+'\033[0mms')
+				except Exception as e:
+					print (e)
 		print (str(http_status_200_count)+'|'+str(http_status_500_count)+'|'+str(http_status_000_count))		
 
 	except Exception as e:
@@ -90,7 +93,7 @@ def check_status(cookies_set,log_file_path,case_content,time_warning_limit,login
 
 
 def main_do():
-	with open('we.conf','r') as f:
+	with open('test.conf','r') as f:
 		load_dict = json.load(f)
 		second_wait = (load_dict['second_wait'])
 		time_warning_limit =(load_dict['time_warning_limit']) 
@@ -107,7 +110,7 @@ def main_do():
 
 	time.sleep(int(second_wait))
 
-
-main_do()
+while True:
+	main_do()
 #check_status()
 
