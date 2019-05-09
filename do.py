@@ -45,6 +45,10 @@ def check_status(cookies_set,log_file_path,case_content,time_warning_limit,login
 		time.sleep(30)
 		print ("after 30s")
 		xxx =driver.get_log('performance')
+		print (xxx[0])
+		cost_start = time.strftime(("%Y-%m-%d %H:%M:%S"), time.localtime(xxx[0]['timestamp']/1000))
+		cost_end = time.strftime(("%Y-%m-%d %H:%M:%S"), time.localtime(xxx[-1]['timestamp']/1000))
+		cost_time = (xxx[-1]['timestamp']-xxx[0]['timestamp'])/1000
 		http_status_200_count = 0
 		http_status_500_count = 0
 		http_status_000_count = 0
@@ -88,7 +92,7 @@ def check_status(cookies_set,log_file_path,case_content,time_warning_limit,login
 				except Exception as e:
 					print (e)
 		with open(result_file_path,'a') as dd:
-			result_string = (str(otherStyleTime)+"|OK:"+str(http_status_200_count)+'|500:'+str(http_status_500_count)+'|000:'+str(http_status_000_count)+'\n\r'+result_000_string)		
+			result_string = (str(otherStyleTime)+"|OK:"+str(http_status_200_count)+'|500:'+str(http_status_500_count)+'|000:'+str(http_status_000_count)+'|cost_time:'+str(cost_time)+'\n\r'+result_000_string)		
 			dd.write(result_string)
 
 	except Exception as e:
