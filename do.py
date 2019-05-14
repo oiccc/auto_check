@@ -14,10 +14,14 @@ def set_page_timeout():
 
 
 
-def check_status(cookies_set,log_file_path,case_content,time_warning_limit,login_url,monitor_url,hub_url,result_file_path):
+def check_status(cookies_set,log_file_path,case_content,time_warning_limit,login_url,monitor_url,hub_url,result_file_path,ignore_in_url_list):
 	try:
-		print (datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-		print ("Check "+case_content)
+		print ('==obv portal check '+datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+		task_status = 'pass'
+		task_http_code = 200
+		res = 'check pass'
+		#print (datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+		#print ("Check "+case_content)
 		chrome_options = webdriver.ChromeOptions()
 		caps = DesiredCapabilities.CHROME
 		caps['loggingPrefs'] = {'performance': 'ALL'}
@@ -40,12 +44,20 @@ def check_status(cookies_set,log_file_path,case_content,time_warning_limit,login
 
 
 		driver.get(monitor_url)
-		#print (driver.page_source)
-		print ("等待30s，页面加载")
-		time.sleep(30)
-		print ("after 30s")
+		try:
+			driver.implicitly_wait(10)   
+			title = driver.title
+		except Exception as e:
+			title = 'cwr entry'
+			print (e)
+		if title != 'cwr entry':
+			task_status = 'failed'
+			res='sessionfailed'
+		#print ("等待30s，页面加载")
+		time.sleep(10)
+		#print ("after 30s")
 		xxx =driver.get_log('performance')
-		print (xxx[0])
+		#print (xxx[0])
 		cost_start = time.strftime(("%Y-%m-%d %H:%M:%S"), time.localtime(xxx[0]['timestamp']/1000))
 		cost_end = time.strftime(("%Y-%m-%d %H:%M:%S"), time.localtime(xxx[-1]['timestamp']/1000))
 		cost_time = (xxx[-1]['timestamp']-xxx[0]['timestamp'])/1000
@@ -69,28 +81,50 @@ def check_status(cookies_set,log_file_path,case_content,time_warning_limit,login
 						r_type = json.loads(i['message'])['message']['params']['type']
 						log_string = str(otherStyleTime)+'|'+url+'|'+str(status)+'|'+str(r_type)+'|'+str(datasize)+'kb|'+str(timetime)+'\n\r'
 						f.write(log_string)
+						if status ==500 and r_type =='XHR':
+							task_status = 'failed'
+							task_http_code = 500
+							res = 'XHR failed>0'
+							for i in ignore_in_url_list:
+								if i in url:
+									#print ('igore')
+									task_status = 'pass'
+									task_http_code = 200
+									res = 'check pass'
+
+									break
+
+
+
 						if status == 200:
 							http_status_200_count += 1
-							if float(timetime) >time_warning_limit:
-								print (str(otherStyleTime)+'|'+url+'|\033[1;32m'+str(status)+'\033[0m|'+str(r_type)+'|'+str(datasize)+'kb|\033[1;33m'+str(timetime)+'\033[0mms')
-							else:
-								print (str(otherStyleTime)+'|'+url+'|\033[1;32m'+str(status)+'\033[0m|'+str(r_type)+'|'+str(datasize)+'kb|\033[1;32m'+str(timetime)+'\033[0mms')
+						#	if float(timetime) >time_warning_limit:
+						#		print (str(otherStyleTime)+'|'+url+'|\033[1;32m'+str(status)+'\033[0m|'+str(r_type)+'|'+str(datasize)+'kb|\033[1;33m'+str(timetime)+'\033[0mms')
+						#	else:
+						#		print (str(otherStyleTime)+'|'+url+'|\033[1;32m'+str(status)+'\033[0m|'+str(r_type)+'|'+str(datasize)+'kb|\033[1;32m'+str(timetime)+'\033[0mms')
 						elif status == 500:
 							result_000_string = result_000_string +log_string
-							http_status_500_count += 1
-							if float(timetime) >time_warning_limit:
-								print (str(otherStyleTime)+'|'+url+'|\033[1;31m'+str(status)+'\033[0m|'+str(r_type)+'|'+str(datasize)+'kb|\033[1;33m'+str(timetime)+'\033[0mms')
-							else:
-								print (str(otherStyleTime)+'|'+url+'|\033[1;31m'+str(status)+'\033[0m|'+str(r_type)+'|'+str(datasize)+'kb|\033[1;32m'+str(timetime)+'\033[0mms')
+						#	http_status_500_count += 1
+						#	if float(timetime) >time_warning_limit:
+						#		print (str(otherStyleTime)+'|'+url+'|\033[1;31m'+str(status)+'\033[0m|'+str(r_type)+'|'+str(datasize)+'kb|\033[1;33m'+str(timetime)+'\033[0mms')
+						#	else:
+						#		print (str(otherStyleTime)+'|'+url+'|\033[1;31m'+str(status)+'\033[0m|'+str(r_type)+'|'+str(datasize)+'kb|\033[1;32m'+str(timetime)+'\033[0mms')
 						else:
 							result_000_string = result_000_string +log_string
 							http_status_000_count += 1
-							if float(timetime) >time_warning_limit:
-								print (str(otherStyleTime)+'|'+url+'|\033[1;31m'+str(status)+'\033[0m|'+str(r_type)+'|'+str(datasize)+'kb|\033[1;33m'+str(timetime)+'\033[0mms')
-							else:
-								print (str(otherStyleTime)+'|'+url+'|\033[1;31m'+str(status)+'\033[0m|'+str(r_type)+'|'+str(datasize)+'kb|\033[1;32m'+str(timetime)+'\033[0mms')
+						#	if float(timetime) >time_warning_limit:
+						#		print (str(otherStyleTime)+'|'+url+'|\033[1;31m'+str(status)+'\033[0m|'+str(r_type)+'|'+str(datasize)+'kb|\033[1;33m'+str(timetime)+'\033[0mms')
+						#	else:
+						#		print (str(otherStyleTime)+'|'+url+'|\033[1;31m'+str(status)+'\033[0m|'+str(r_type)+'|'+str(datasize)+'kb|\033[1;32m'+str(timetime)+'\033[0mms')
 				except Exception as e:
 					print (e)
+		
+		if int(cost_time) >60:
+			task_status = 'failed'
+			res = 'CostTime>60'
+
+		infostring =  ('checkitem=obv portal,name={},status={},http_code={},time_total={},desc={}'.format(case_content,task_status,task_http_code,cost_time,res))
+		print (infostring)
 		with open(result_file_path,'a') as dd:
 			result_string = (str(otherStyleTime)+"|OK:"+str(http_status_200_count)+'|500:'+str(http_status_500_count)+'|000:'+str(http_status_000_count)+'|cost_time:'+str(cost_time)+'\n\r'+result_000_string)		
 			dd.write(result_string)
@@ -114,15 +148,18 @@ def main_do():
 		login_url = (load_dict['login_url']) 
 		monitor_url = (load_dict['monitor_url']) 
 		hub_url = (load_dict['hub_url']) 
+		ignore_in_url_list = (load_dict['ignore_in_url']).split(',')
 
 		for i in load_dict['config_set']:
 			cookies_set =i['config']['cookies']
 			log_file_path = (i['config']['log_file_path'])
 			result_file_path = (i['config']['result_file_path'])
 			case_content = (i['config']['case_content'])
-			check_status(cookies_set,log_file_path,case_content,time_warning_limit,login_url,monitor_url,hub_url,result_file_path)
-
-	time.sleep(int(second_wait))
+			check_status(cookies_set,log_file_path,case_content,time_warning_limit,login_url,monitor_url,hub_url,result_file_path,ignore_in_url_list)		
+	if int(second_wait)==-1:
+		exit()
+	else:
+		time.sleep(int(second_wait))
 
 while True:
 	main_do()
