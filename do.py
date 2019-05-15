@@ -146,7 +146,8 @@ def check_status(cookies_set,log_file_path,case_content,time_warning_limit,login
 			xxx = login_refresh_ression(username,password)
 			print (session_from_conf,xxx)
 			replace_session(session_from_conf,xxx)
-			exit()
+			check_status(cookies_set,log_file_path,case_content,time_warning_limit,login_url,monitor_url,hub_url,result_file_path,ignore_in_url_list,username,password)
+			pass
 			#go to login and refresh session
 		#print ("等待30s，页面加载")
 		time.sleep(10)
