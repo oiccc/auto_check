@@ -6,7 +6,7 @@ import json
 import time
 import datetime
 import requests
-
+import re
 
 
 def set_page_timeout():
