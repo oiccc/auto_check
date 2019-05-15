@@ -45,8 +45,8 @@ def login_refresh_ression(login_username,login_password):
         }
 
 	page_url = 'https://authwe.cwrcloud.huawei.com/cas/login?service=https://we.cwrcloud.huawei.com/cwr-user-web/shiro-cas'
-    loginurl = 'https://authwe.cwrcloud.huawei.com/cas/login'
-    login_data = {
+	loginurl = 'https://authwe.cwrcloud.huawei.com/cas/login'
+	login_data = {
                 'username':login_username,
                 'password':login_password,
                 'securityCode':'1111',
@@ -63,7 +63,7 @@ def login_refresh_ression(login_username,login_password):
 	s = requests.Session()
 	res111 = s.get(page_url)
 	res222 = s.get("https://authwe.cwrcloud.huawei.com/cas/defaultKaptcha")
-  	res333 = s.get("https://authwe.cwrcloud.huawei.com/cas/getUserWebSite?GET")
+	res333 = s.get("https://authwe.cwrcloud.huawei.com/cas/getUserWebSite?GET")
             #headersss_admin['SESSION'] = s.cookies.get_dict()['SESSION']
 	print (res333.content)
 	print (yzm_data)
