@@ -77,13 +77,13 @@ def login_refresh_ression(login_username,login_password):
 	headersss_admin['SESSION'] = xxx
 	print (headersss_admin)
 
-	loginstring='username=sxzdhUser01&password=Aa123456&securityCode=1111&execution=e1s1&_eventId=submit&geolocation=&language=zh-cn'
+	loginstring='username='+login_username+'&password='+login_password+'&securityCode=1111&execution=e1s1&_eventId=submit&geolocation=&language=zh-cn'
 	res134 = s.post("https://authwe.cwrcloud.huawei.com/cas/login",data=loginstring,headers=headersss_admin,verify=False)
 	print ('ssosss',res134.content)
 	print ('httpcode',res134.status_code)
 	print (res133.headers)
 	print (s.cookies.get_dict())
-	headersss_admin222['Cookie'] = 'shiro.sesssion2'+'='+str(s.cookies.get_dict()['shiro.sesssion2'])+';nickName=sxzdhUser01; language=zh-cn'
+	headersss_admin222['Cookie'] = 'shiro.sesssion2'+'='+str(s.cookies.get_dict()['shiro.sesssion2'])+';nickName='+login_username+'; language=zh-cn'
 	print (headersss_admin222)
 	res444 = s.get("https://we.cwrcloud.huawei.com/cwr-user-web/pages/cwr-entry-new.html",headers=headersss_admin222,verify=False)
             
