@@ -15,9 +15,7 @@ def set_page_timeout():
 def login_refresh_ression(login_username,login_password):
 	x=1
 	print (login_username,login_password)
-	if 1==1:
-		if 1==1:
-			headersss_admin = {
+	headersss_admin = {
         'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
         'Accept-Encoding':'gzip, deflate, br',
         'Accept-Language':'zh-CN,zh;q=0.9',
@@ -26,14 +24,14 @@ def login_refresh_ression(login_username,login_password):
         'Content-Length':'115',
         'Content-Type':'application/x-www-form-urlencoded',
         #'Cookie':'SESSION=daf7aebf-f3ec-4302-ad2c-ed311cb1e7b2',
-        'Host':'auth-alpha2.cwrcloud.huawei.com',
+        'Host':'authwe.cwrcloud.huawei.com',
         'Origin':'https://authwe.cwrcloud.huawei.com',
         'Referer':'https://authwe.cwrcloud.huawei.com/cas/login?service=https://authwe.cwrcloud.huawei.com/cwr-user-web/shiro-cas?targetUrl=/',
         'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.104 Safari/537.36',
         'Upgrade-Insecure-Requests':'1'
         }
 
-    		headersss_admin222 = {
+    headersss_admin222 = {
         'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
         'Accept-Encoding':'gzip, deflate, br',
         'Accept-Language':'zh-CN,zh;q=0.9',
@@ -41,15 +39,15 @@ def login_refresh_ression(login_username,login_password):
         'Connection':'keep-alive',
 
         #'Cookie':'SESSION=daf7aebf-f3ec-4302-ad2c-ed311cb1e7b2',
-        'Host':'alpha2.cwrcloud.huawei.com',
+        'Host':'we.cwrcloud.huawei.com',
         'Referer':'https://authwe.cwrcloud.huawei.com/cas/login?service=https://authwe.cwrcloud.huawei.com/cwr-user-web/shiro-cas',
         'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.104 Safari/537.36',
         'Upgrade-Insecure-Requests':'1'
         }
 
-            page_url = 'https://authwe.cwrcloud.huawei.com/cas/login?service=https://authwe.cwrcloud.huawei.com/cwr-user-web/shiro-cas'
-            loginurl = 'https://authwe.cwrcloud.huawei.com/cas/login'
-            login_data = {
+	page_url = 'https://authwe.cwrcloud.huawei.com/cas/login?service=https://we.cwrcloud.huawei.com/cwr-user-web/shiro-cas'
+    loginurl = 'https://authwe.cwrcloud.huawei.com/cas/login'
+    login_data = {
                 'username':login_username,
                 'password':login_password,
                 'securityCode':'1111',
@@ -57,50 +55,50 @@ def login_refresh_ression(login_username,login_password):
                 'execution':'e1s1',
                 '_eventId':'submit',
                 'geolocation':''}  
-            yzm_data = {
+	yzm_data = {
                 'userName':login_username,
                 'password':login_password,
                 'code':'1111',
                 'languageType':'zh-cn'}  
-            yzm_string = 'userName=sxzdhUser01&password=Aa123456&code=1111&languageType=zh-cn'
-            s = requests.Session()
-            res111 = s.get(page_url)
-            res222 = s.get("https://authwe.cwrcloud.huawei.com/cas/defaultKaptcha")
-            res333 = s.get("https://authwe.cwrcloud.huawei.com/cas/getUserWebSite?GET")
+	yzm_string = 'userName=sxzdhUser01&password=Aa123456&code=1111&languageType=zh-cn'
+	s = requests.Session()
+	res111 = s.get(page_url)
+	res222 = s.get("https://authwe.cwrcloud.huawei.com/cas/defaultKaptcha")
+  	res333 = s.get("https://authwe.cwrcloud.huawei.com/cas/getUserWebSite?GET")
             #headersss_admin['SESSION'] = s.cookies.get_dict()['SESSION']
-            print (res333.content)
-            print (yzm_data)
-            xxx = s.cookies.get_dict()['SESSION']
-            print (xxx)
-            res133 = s.post("https://authwe.cwrcloud.huawei.com/cas/compareKaptcha",headers=headersss_admin,data=yzm_data,verify=False)
+	print (res333.content)
+	print (yzm_data)
+	xxx = s.cookies.get_dict()['SESSION']
+	print (xxx)
+	res133 = s.post("https://authwe.cwrcloud.huawei.com/cas/compareKaptcha",headers=headersss_admin,data=yzm_data,verify=False)
             #headersss_admin['SESSION'] = s.cookies.get_dict()['SESSION']
-            print (headersss_admin)
-            print (res133.content)
-            print (res133.headers)
-            headersss_admin['SESSION'] = xxx
-            print (headersss_admin)
+	print (headersss_admin)
+	print (res133.content)
+	print (res133.headers)
+	headersss_admin['SESSION'] = xxx
+	print (headersss_admin)
 
-            loginstring='username=sxzdhUser01&password=Aa123456&securityCode=1111&execution=e1s1&_eventId=submit&geolocation=&language=zh-cn'
-            res134 = s.post("https://authwe.cwrcloud.huawei.com/cas/login",data=loginstring,headers=headersss_admin,verify=False)
-            print ('ssosss',res134.content)
-            print ('httpcode',res134.status_code)
-            print (res133.headers)
-            print (s.cookies.get_dict())
-            headersss_admin222['Cookie'] = 'shiro.sesssion2'+'='+str(s.cookies.get_dict()['shiro.sesssion2'])+';nickName=sxzdhUser01; language=zh-cn'
-            print (headersss_admin222)
-            res444 = s.get("https://authwe.cwrcloud.huawei.com/cwr-user-web/pages/cwr-entry-new.html",headers=headersss_admin222,verify=False)
+	loginstring='username=sxzdhUser01&password=Aa123456&securityCode=1111&execution=e1s1&_eventId=submit&geolocation=&language=zh-cn'
+	res134 = s.post("https://authwe.cwrcloud.huawei.com/cas/login",data=loginstring,headers=headersss_admin,verify=False)
+	print ('ssosss',res134.content)
+	print ('httpcode',res134.status_code)
+	print (res133.headers)
+	print (s.cookies.get_dict())
+	headersss_admin222['Cookie'] = 'shiro.sesssion2'+'='+str(s.cookies.get_dict()['shiro.sesssion2'])+';nickName=sxzdhUser01; language=zh-cn'
+	print (headersss_admin222)
+	res444 = s.get("https://we.cwrcloud.huawei.com/cwr-user-web/pages/cwr-entry-new.html",headers=headersss_admin222,verify=False)
             
-            print (res444.content)
-            res555 = s.get("https://authwe.cwrcloud.huawei.com/cwr-user-web/anticsrf.js",headers=headersss_admin222,verify=False)
-            print (res555.content)
+	print (res444.content)
+	res555 = s.get("https://we.cwrcloud.huawei.com/cwr-user-web/anticsrf.js",headers=headersss_admin222,verify=False)
+	print (res555.content)
 
-            result = re.findall(".token:\"(.*)\"\}",str(res555.content))
-            for i in s.cookies.get_dict():
-                print (i,s.cookies.get_dict()[i])
-                newcookies = i+"="+s.cookies.get_dict()[i]
-            X_CSRF_TOKEN = result[0]
-            print (res444.status_code)
-            print( newcookies,X_CSRF_TOKEN)
+	result = re.findall(".token:\"(.*)\"\}",str(res555.content))
+	for i in s.cookies.get_dict():
+		print (i,s.cookies.get_dict()[i])
+		newcookies = i+"="+s.cookies.get_dict()[i]
+	X_CSRF_TOKEN = result[0]
+	print (res444.status_code)
+	print( newcookies,X_CSRF_TOKEN)
 
 
 
