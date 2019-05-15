@@ -14,7 +14,7 @@ def set_page_timeout():
 
 def replace_session(s1,s2):
 	with open('test.conf','r') as f:
-		xx = f.readlines()
+		xx = f.readline()
 	xxx = xx.replace(s1,s2)
 	print (xxx)
 
