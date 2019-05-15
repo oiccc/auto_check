@@ -92,12 +92,8 @@ def login_refresh_ression(login_username,login_password):
 	print (res555.content)
 
 	result = re.findall(".token:\"(.*)\"\}",str(res555.content))
-	for i in s.cookies.get_dict():
-		print (i,s.cookies.get_dict()[i])
-		newcookies = i+"="+s.cookies.get_dict()[i]
-	X_CSRF_TOKEN = result[0]
-	print (res444.status_code)
-	print( newcookies,X_CSRF_TOKEN)
+	xxx = s.cookies.get_dict()
+	print (xxx['shiro.sesssion2'])
 
 
 
