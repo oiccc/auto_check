@@ -12,6 +12,13 @@ import re
 def set_page_timeout():
 	x = 1
 
+def replace_session(s1,s2):
+	with open('test.conf','r') as f:
+		xx = f.readlines()
+	xxx = xx.replace(s1,s2)
+	print (xxx)
+
+
 def login_refresh_ression(login_username,login_password):
 	x=1
 	print (login_username,login_password)
@@ -136,6 +143,7 @@ def check_status(cookies_set,log_file_path,case_content,time_warning_limit,login
 			res='sessionfailed'
 			xxx = login_refresh_ression(username,password)
 			print (session_from_conf,xxx)
+			replace_session(session_from_conf,xxx)
 			exit()
 			#go to login and refresh session
 		#print ("等待30s，页面加载")
