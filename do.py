@@ -17,6 +17,8 @@ def replace_session(s1,s2):
 		xx = f.read()
 	xxx = xx.replace(s1,s2)
 	print (xxx)
+	with open('test.conf','w') as f:
+		f.write(xxx)
 
 
 def login_refresh_ression(login_username,login_password):
