@@ -65,35 +65,28 @@ def login_refresh_ression(login_username,login_password):
 	res222 = s.get("https://authwe.cwrcloud.huawei.com/cas/defaultKaptcha")
 	res333 = s.get("https://authwe.cwrcloud.huawei.com/cas/getUserWebSite?GET")
             #headersss_admin['SESSION'] = s.cookies.get_dict()['SESSION']
-	print (res333.content)
-	print (yzm_data)
+
 	xxx = s.cookies.get_dict()['SESSION']
-	print (xxx)
+
 	res133 = s.post("https://authwe.cwrcloud.huawei.com/cas/compareKaptcha",headers=headersss_admin,data=yzm_data,verify=False)
-            #headersss_admin['SESSION'] = s.cookies.get_dict()['SESSION']
-	print (headersss_admin)
-	print (res133.content)
-	print (res133.headers)
+
 	headersss_admin['SESSION'] = xxx
-	print (headersss_admin)
+
 
 	loginstring='username='+login_username+'&password='+login_password+'&securityCode=1111&execution=e1s1&_eventId=submit&geolocation=&language=zh-cn'
 	res134 = s.post("https://authwe.cwrcloud.huawei.com/cas/login",data=loginstring,headers=headersss_admin,verify=False)
-	print ('ssosss',res134.content)
-	print ('httpcode',res134.status_code)
-	print (res133.headers)
-	print (s.cookies.get_dict())
+
 	headersss_admin222['Cookie'] = 'shiro.sesssion2'+'='+str(s.cookies.get_dict()['shiro.sesssion2'])+';nickName='+login_username+'; language=zh-cn'
-	print (headersss_admin222)
+
 	res444 = s.get("https://we.cwrcloud.huawei.com/cwr-user-web/pages/cwr-entry-new.html",headers=headersss_admin222,verify=False)
             
-	print (res444.content)
+
 	res555 = s.get("https://we.cwrcloud.huawei.com/cwr-user-web/anticsrf.js",headers=headersss_admin222,verify=False)
-	print (res555.content)
+
 
 	result = re.findall(".token:\"(.*)\"\}",str(res555.content))
 	xxx = s.cookies.get_dict()
-	print (xxx['shiro.sesssion2'])
+	return (xxx['shiro.sesssion2'])
 
 
 
@@ -140,7 +133,8 @@ def check_status(cookies_set,log_file_path,case_content,time_warning_limit,login
 		if title != 'cwr entry':
 			task_status = 'failed'
 			res='sessionfailed'
-			login_refresh_ression(username,password)
+			xxx = login_refresh_ression(username,password)
+			print (xxx)
 			exit()
 			#go to login and refresh session
 		#print ("等待30s，页面加载")
