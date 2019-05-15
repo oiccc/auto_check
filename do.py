@@ -110,7 +110,8 @@ def check_status(cookies_set,log_file_path,case_content,time_warning_limit,login
 		desired_capabilities = caps)
 		driver.get(login_url)
 		for i in cookies_set:
-			#print (i)
+			if i['name'] == 'shiro.sesssion2':
+				session_from_conf = i['value']
 			if i['secure'] =='False':
 				i['secure'] = False
 			elif i['secure'] =='True':
@@ -134,7 +135,7 @@ def check_status(cookies_set,log_file_path,case_content,time_warning_limit,login
 			task_status = 'failed'
 			res='sessionfailed'
 			xxx = login_refresh_ression(username,password)
-			print (xxx)
+			print (session_from_conf,xxx)
 			exit()
 			#go to login and refresh session
 		#print ("等待30s，页面加载")
