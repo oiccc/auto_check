@@ -7,23 +7,48 @@ import time
 import datetime
 import requests
 import re
-
+import pymysql
 
 def set_page_timeout():
 	x = 1
+
+
+
+def switch_verify(host, username, password,action):
+
+	db = 'cwr_omni_release'
+	connect = pymysql.connect(host, username, password, db, charset='utf8')
+	cursor = connect.cursor()
+	try:
+		if action == 1:
+			update_userinfo_sql = u"update cwr_cfg_properties set paramValue=False where paramKey='verification.code';"
+		elif action == 2:
+			update_userinfo_sql = u"update cwr_cfg_properties set paramValue=True where paramKey='verification.code';"       
+		print (update_userinfo_sql)
+		cursor.execute(update_userinfo_sql)
+		connect.commit()
+    
+	except Exception as e:
+		print (e)
+	finally:
+		if connect:
+			connect.close()
+
+
 
 def replace_session(s1,s2):
 	with open('test.conf','r') as f:
 		xx = f.read()
 	xxx = xx.replace(s1,s2)
 	print (xxx)
-	with open('test.conf','w') as f:
-		f.write(xxx)
+	with open('test.conf','w') as f2:
+		f2.write(xxx)
 
 
-def login_refresh_ression(login_username,login_password):
+def login_refresh_ression(dbip,dbusername,dbpassword,login_username,login_password):
 	x=1
 	print (login_username,login_password)
+	switch_verify(dbip, dbusername, dbpassword,1)
 	headersss_admin = {
         'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
         'Accept-Encoding':'gzip, deflate, br',
@@ -95,6 +120,8 @@ def login_refresh_ression(login_username,login_password):
 
 	result = re.findall(".token:\"(.*)\"\}",str(res555.content))
 	xxx = s.cookies.get_dict()
+	print (xxx)
+	switch_verify(dbip, dbusername, dbpassword,2)
 	return (xxx['shiro.sesssion2'])
 
 
@@ -102,7 +129,7 @@ def login_refresh_ression(login_username,login_password):
 
 
 
-def check_status(cookies_set,log_file_path,case_content,time_warning_limit,login_url,monitor_url,hub_url,result_file_path,ignore_in_url_list,username,password):
+def check_status(dbip,dbusername,dbpassword,cookies_set,log_file_path,case_content,time_warning_limit,login_url,monitor_url,hub_url,result_file_path,ignore_in_url_list,username,password):
 	try:
 		print ('==obv portal check '+datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 		task_status = 'pass'
@@ -143,14 +170,14 @@ def check_status(cookies_set,log_file_path,case_content,time_warning_limit,login
 		if title != 'cwr entry':
 			task_status = 'failed'
 			res='sessionfailed'
-			xxx = login_refresh_ression(username,password)
+			xxx = login_refresh_ression(dbip,dbusername,dbpassword,username,password)
 			#print (session_from_conf,xxx)
 			replace_session(session_from_conf,xxx)
-			check_status(cookies_set,log_file_path,case_content,time_warning_limit,login_url,monitor_url,hub_url,result_file_path,ignore_in_url_list,username,password)
+			check_status(dbip,dbusername,dbpassword,cookies_set,log_file_path,case_content,time_warning_limit,login_url,monitor_url,hub_url,result_file_path,ignore_in_url_list,username,password)
 
 			#go to login and refresh session
 		#print ("等待30s，页面加载")
-		time.sleep(10)
+		time.sleep(30)
 		#print ("after 30s")
 		xxx =driver.get_log('performance')
 		#print (xxx[0])
@@ -246,6 +273,10 @@ def main_do():
 		login_url = (load_dict['login_url']) 
 		monitor_url = (load_dict['monitor_url']) 
 		hub_url = (load_dict['hub_url']) 
+		dbip = (load_dict['dbip']) 
+		dbusername= (load_dict['dbusername']) 
+		dbpassword=(load_dict['dbpassword']) 
+
 
 		ignore_in_url_list = (load_dict['ignore_in_url']).split(',')
 
@@ -256,7 +287,7 @@ def main_do():
 			case_content = (i['config']['case_content'])
 			username =(i['config']['username'])
 			password = (i['config']['password']) 
-			check_status(cookies_set,log_file_path,case_content,time_warning_limit,login_url,monitor_url,hub_url,result_file_path,ignore_in_url_list,username,password)		
+			check_status(dbip,dbusername,dbpassword,cookies_set,log_file_path,case_content,time_warning_limit,login_url,monitor_url,hub_url,result_file_path,ignore_in_url_list,username,password)		
 	if int(second_wait)==-1:
 		exit()
 	else:
